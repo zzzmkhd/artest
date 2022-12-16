@@ -1,0 +1,311 @@
+<html>
+
+<head>
+    <title>lesson</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script>
+
+        // 位置情報関係ここから
+        var distance = 100;
+        var num = 1;
+        let material_src = [
+            {
+                img : "fb2.jpg",
+                text : "FRENCH BULLDOG"
+            },
+            {
+                img : "cat2.png",
+                text : "CAT"     
+            },
+            {
+                img : "pig.jpeg",
+                text : "PIG"
+            },
+            {
+                img : "risu.png",
+                text : "SQUIRREL"
+            },
+            {
+                img : "koara.png",
+                text : "KOARA"
+            },
+            {
+                img : "kirin.png",
+                text : "GIRAFFE"
+            },
+            {
+                img : "usagi.png",
+                text : "RABIT"
+            },
+        ];
+
+        // 緯度経度から２地点間の距離を計算
+        const R = Math.PI / 180;
+        function calc_distance(lat1, lng1, lat2, lng2) {
+            lat1 *= R;
+            lng1 *= R;
+            lat2 *= R;
+            lng2 *= R;
+            return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
+        }
+
+        // 皇居　NW下北 8.17km
+        // const target_position = {
+        //     lat: 35.68568619246583,
+        //     lon: 139.7530266039131
+        // }
+        // 六本木　NW下北 5.8km
+        // const target_position = {
+        //     lat: 35.66406860183242,
+        //     lon: 139.73238288341793
+        // }
+        // 渋谷駅
+        const target_position = {
+            lat: 35.65829537948216,
+            lon: 139.70163580709936
+        }
+
+        // 位置情報取得処理に渡すオプション
+        var options = {
+            // 高精度な位置情報を取得するか(デフォルトはfalse)
+            enableHightAccuracy: true,
+            // 取得した位置情報をキャッシュする時間(ミリ秒。デフォルトは0)
+            maximumAge: 0,
+            // 何秒でタイムアウトとするか(ミリ秒。タイムアウトするとerrorCallback()がコールされる)
+            timeout: 120000
+        }
+
+
+        function successCallback(position) {
+
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            var timestamp = position.timestamp;
+            var successDate = new Date(timestamp);
+
+            console.log("success");
+
+            distance = calc_distance(target_position.lat, target_position.lon, latitude, longitude);
+
+            // 目的地からの距離に応じて出しわけるためのパラメータをAPIで取得
+            param1 = Math.floor(distance);
+            const promise = fetch("https://httpbin.org/get?param1=" + param1);
+            promise.then((response) => {
+                return response.json();
+            })
+                .then((data) => {
+                    // console.log(data);
+                    // console.log(data.args.param1);
+                    num = data.args.param1;
+                });
+
+
+        }
+
+        // 引数として、code(コード)とmessage(メッセージ)の2つを持ったpositionErrorが渡される
+        function errorCallback(positionError) {
+            console.log('error');
+
+            // コード(1～3のいずれかの値)
+            var code = positionError.code;
+            // メッセージ(開発者向けデバッグ用メッセージ)
+            var message = positionError.message;
+
+
+            // コードに応じたメッセージを表示
+            switch (code) {
+                case positionError.PERMISSION_DENIED: // codeが1
+                    console.log("GeolocationAPIのアクセス許可がありません");
+                    break;
+                case positionError.POSITION_UNAVAILABLE: // codeが2
+                    console.log("現在の位置情報を特定できませんでした");
+                    break;
+                case positionError.TIMEOUT: // codeが3
+                    console.log("指定されたタイムアウト時間内に現在の位置情報を特定できませんでした");
+                    break;
+            }
+        }
+
+        var watchId = null;
+        // 位置情報取得開始
+        function start() {
+            if (watchId == null) {
+
+                // ブラウザがGeolocation APIに対応しているかをチェック
+                if (navigator.geolocation) {
+                    // navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
+                    watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, options);
+
+                } else {
+                    // 対応していない → alertを表示するのみ
+                    alert("Geolocation not supported in this browser");
+                }
+                let dum = document.querySelector("#content1");
+                console.log(dum);
+                dum.setAttribute("src", "cat2.png");
+                console.log(dum);
+            }
+        }
+        // 位置情報関係ここまで
+
+
+
+
+
+
+
+        window.onload = function () {
+            start();
+            //PC
+            window.addEventListener('mousedown', touchDownHandler);
+            window.addEventListener('mousemove', touchMoveHandler);
+            window.addEventListener('mouseup', touchEndHandler);
+            //Smartphone
+            window.addEventListener("touchstart", touchDownHandler);
+            window.addEventListener("touchmove", touchMoveHandler);
+            window.addEventListener('touchend', touchEndHandler);
+        };
+
+        var startX;
+        var pressed = false;
+        var touchDownHandler = function (e) {
+            pressedd = true;
+            if (e.touches && e.touches[0]) {
+                startX = e.touches[0].clientX;
+            }
+            else if (e.clientX) {
+                startX = e.clientX;
+            }
+
+        };
+        var touchEndHandler = function (e) {
+            pressed = false;
+        };
+        var touchMoveHandler = function (e) {
+            if (pressed) {
+                var x = 0;
+                if (e.touches && e.touches[0]) {
+                    x = e.touches[0].clientX;
+                }
+                else if (e.clientX) {
+                    x = e.clientX;
+                }
+                var obj = document.getElementById("earth").object3D;
+                obj.rotateZ((x - startX) * 0.001);
+            }
+        };
+
+        AFRAME.registerComponent('markerhandler', {
+            schema: {
+                arobject: { type: 'selector' }
+            },
+            init: function () {
+                this.isTracking = false;
+                this.el.sceneEl.addEventListener('markerFound', () => {
+                    this.isTracking = true;
+                    console.log('tracking:' + this.isTracking);
+                });
+                this.el.sceneEl.addEventListener('markerLost', () => {
+                    this.isTracking = false;
+                    console.log('tracking:' + this.isTracking);
+                    var obj = this.data.arobject.object3D;
+                    obj.position.set(0, 0, -6);
+                    obj.quaternion.set(0, 0, 0, 1);
+                    obj.rotateX(3.14 / 2);
+                })
+            },
+            tick: function () {
+                if (this.isTracking) {
+                    var marker = this.el.object3D;
+                    var p = new THREE.Vector3();
+                    marker.getWorldPosition(p);
+
+                    var q = new THREE.Quaternion();
+                    marker.getWorldQuaternion(q);
+
+                    var obj = this.data.arobject.object3D;
+                    obj.position.set(p.x, p.y, p.z);
+                    obj.quaternion.set(q.x, q.y, q.z, q.w);
+
+                }
+                document.querySelector("#content3").setAttribute("value", distance + "km\n" + "from SGT OFFICE");
+
+
+                //debug用。数字入れて動的にマテリアルを変更する
+                // num = Number(document.getElementById('debug3').value);
+                // num = Math.floor(distance);
+                console.log(num);
+                if(!(0 <= num && num <=6)){
+                    document.querySelector("#earth").setAttribute("visible",false);
+                    // num = 0;
+                }
+                else {
+                    document.querySelector("#earth").setAttribute("visible",true);
+                    document.querySelector("#content1").setAttribute("src", material_src[num].img);
+                    document.querySelector("#content2").setAttribute("value", material_src[num].text);
+                }
+                
+
+            }
+        });
+    </script>
+
+
+    <style>
+        #debug,
+        #debug2,
+        #debug3 {
+            position: fixed;
+            z-index: 10000;
+            background-color: #fff;
+            padding: 10px;
+            top: 0;
+            left: 0;
+            display: block;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!-- <div id="debug">debug</div> -->
+    <!-- <button id="debug2" onclick="start()" style="left:100px;">start</button> -->
+    <input type="text" id="debug3" style="left:200px;">
+    <img src=" fb2.jpg">
+
+    <a-scene embeded arjs>
+        <a-marker markerhandler="arobject:#ar-objects" preset="hiro">
+
+        </a-marker>
+        <!-- <a-entity camera></a-entity> -->
+        <a-entity id="ar-objects">
+            <a-entity id="earth" visible="true">
+                <a-sphere id="content1" position="0 1.25 0" src="fb2.jpg" radius="1.25" scale="0.6 0.6 0.6" shadow animation="
+                    property: rotation;
+                    dur: 10000;
+                    from:0 0 0;
+                    to: 360 360 180;
+                    loop:-1;
+                    easing: linear;
+                "></a-sphere>
+            </a-entity>
+        </a-entity>
+        <a-box position="1 0 -5" rotation="0 45 45" src="tpoint.png" scale="0.2 0.2 0.2" animation="
+            property: rotation;
+            dur: 5000;
+            from:0 0 0;
+            to: 360 -360 360;
+            loop:-1;
+            easing: linear;
+        "></a-box>
+
+        <!-- <a-sky src="fujisan.jpg"></a-sky> -->
+        <!-- <a-video src="fb.mp4" position="1 0 -3"></a-video> -->
+        <a-text id="content2" position="-2 2 -5" value="test text" color="#000"></a-text>
+        <a-text id="content3" position="0 1 -5" value="distance" color="#F00"></a-text>
+    </a-scene>
+</body>
+
+</html>
