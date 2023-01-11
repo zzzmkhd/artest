@@ -1,10 +1,6 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARデモ1220</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -15,32 +11,32 @@
         var num = 1;
         let material_src = [
             {
-                img: "fb2.jpg",
-                text: "FRENCH BULLDOG"
+                img : "fb2.jpg",
+                text : "FRENCH BULLDOG"
             },
             {
-                img: "cat2.jpg",
-                text: "CAT"
+                img : "cat2.jpg",
+                text : "CAT"     
             },
             {
-                img: "pig.jpeg",
-                text: "PIG"
+                img : "pig.jpeg",
+                text : "PIG"
             },
             {
-                img: "risu.jpg",
-                text: "SQUIRREL"
+                img : "risu.jpg",
+                text : "SQUIRREL"
             },
             {
-                img: "koara.jpg",
-                text: "KOARA"
+                img : "koara.jpg",
+                text : "KOARA"
             },
             {
-                img: "kirin.jpg",
-                text: "GIRAFFE"
+                img : "kirin.jpg",
+                text : "GIRAFFE"
             },
             {
-                img: "usagi.jpg",
-                text: "RABIT"
+                img : "usagi.jpg",
+                text : "RABIT"
             },
         ];
 
@@ -233,16 +229,16 @@
                 // num = Number(document.getElementById('debug3').value);
                 // num = Math.floor(distance);
                 console.log(num);
-                if (!(0 <= num && num <= 6)) {
-                    document.querySelector("#earth").setAttribute("visible", false);
+                if(!(0 <= num && num <=6)){
+                    document.querySelector("#earth").setAttribute("visible",false);
                     // num = 0;
                 }
                 else {
-                    document.querySelector("#earth").setAttribute("visible", true);
+                    document.querySelector("#earth").setAttribute("visible",true);
                     document.querySelector("#content1").setAttribute("src", material_src[num].img);
                     document.querySelector("#content2").setAttribute("value", material_src[num].text);
                 }
-
+                
 
             }
         });
@@ -270,7 +266,7 @@
     <!-- <div id="debug">debug</div> -->
     <!-- <button id="debug2" onclick="start()" style="left:100px;">start</button> -->
     <!-- <input type="text" id="debug3" style="left:200px;"> -->
-    <!-- <div style="text-align: center;"><img src="fb2.jpg"></div> -->
+    <img src=" fb2.jpg">
 
     <a-scene embeded arjs>
         <a-marker markerhandler="arobject:#ar-objects" preset="hiro">
@@ -279,8 +275,7 @@
         <!-- <a-entity camera></a-entity> -->
         <a-entity id="ar-objects">
             <a-entity id="earth" visible="true">
-                <a-sphere id="content1" position="0 1.3 0" src="fb2.jpg" radius="1.25" scale="0.6 0.6 0.6" shadow
-                    animation="
+                <a-sphere id="content1" position="0 1.25 0" src="fb2.jpg" radius="1.25" scale="0.6 0.6 0.6" shadow animation="
                     property: rotation;
                     dur: 10000;
                     from:0 0 0;
@@ -290,7 +285,7 @@
                 "></a-sphere>
             </a-entity>
         </a-entity>
-        <a-box position="1 0 -5" rotation="0 45 45" src="tpoint.png" scale="0.3 0.3 0.3" animation="
+        <a-box position="1 0 -5" rotation="0 45 45" src="tpoint.png" scale="0.2 0.2 0.2" animation="
             property: rotation;
             dur: 5000;
             from:0 0 0;
@@ -301,7 +296,7 @@
 
         <!-- <a-sky src="fujisan.jpg"></a-sky> -->
         <!-- <a-video src="fb.mp4" position="1 0 -3"></a-video> -->
-        <a-text id="content2" position="0 2 -5" value="test text" color="#000"></a-text>
+        <a-text id="content2" position="-2 2 -5" value="test text" color="#000"></a-text>
         <a-text id="content3" position="0 1 -5" value="distance" color="#F00"></a-text>
     </a-scene>
 </body>
