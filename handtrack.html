@@ -7,6 +7,7 @@
             let scene;
             let rightHand;
             let leftHand;
+            let prev; //最後にBoxを置いた位置を記憶する
 
             window.onload = () =>{
                 scene = document.querySelector("a-scene");
@@ -28,7 +29,9 @@
                 });
                 //ピンチしながら手を移動
                 rightHand.addEventListener("pinchmoved", (e) => {
-
+                    let position = e.detail.position;
+                    //BOX生成
+                    addBox(position);
                 })
 
             };
