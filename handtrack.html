@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+        <script>
+            let scene;
+            let rightHand;
+            let leftHand;
+
+            window.onload = () =>{
+                scene = document.querySelector("a-scene");
+                initRightHand();
+                initLeftHand();
+            };
+
+            function initRightHand(){
+                rightHand = document.getElementById("rightHand");
+                //ピンチ開始
+                rightHand.addEventListener("pinchstarted", (e) => {
+                    let position = e.detail.position;
+                    //BOX生成関数
+                    addBox(position);
+                });
+                //ピンチ終了
+                rightHand.addEventListener("pinchended", (e) => {
+
+                });
+                //ピンチしながら手を移動
+                rightHand.addEventListener("pinchmoved", (e) => {
+
+                })
+
+            };
+            function initLeftHand(){
+
+            };
+            function addBox(position){
+                let box = document.createElement("a-box");
+                box.setAttribute("position", position);
+                box.setAttribute("scale", "0.02 0.02 0.02");
+                box.setAttribute("color", "#0062c6");
+                //あとで一括削除するようにクラス名えっ邸
+                box.setAttribute("class", "box");
+                scene.appendChild(box);
+            }
+        </script>
+        
+    </head>
+    <body>
+        <a-scene background="color:#ececec">
+            <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4cc3d9" shadow></a-box>
+            <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:mesh;"></a-entity>
+            <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
+        </a-scene>
+    </body>
+</html>
