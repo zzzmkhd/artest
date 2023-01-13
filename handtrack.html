@@ -9,6 +9,9 @@
         let rightHand;
         let leftHand;
         let prev; //最後にBoxを置いた位置を記憶する
+        //Cubeに割り当てる色の配列
+        let colors = ["#0062c6", "00ab00","ffcf00","7f00ff","ffffff","ff2000","f52394","593110"]
+        let index = 0; // 利用する色の番号
 
         window.onload = () => {
             scene = document.querySelector("a-scene");
@@ -26,7 +29,9 @@
             });
             //ピンチ終了
             rightHand.addEventListener("pinchended", (e) => {
-
+                //色の番号を加算してあとでBoxに反映
+                index++;
+                index %= colors.length;
             });
             //ピンチしながら手を移動
             rightHand.addEventListener("pinchmoved", (e) => {
@@ -48,7 +53,8 @@
             let box = document.createElement("a-box");
             box.setAttribute("position", position);
             box.setAttribute("scale", "0.02 0.02 0.02");
-            box.setAttribute("color", "#0062c6");
+            box.setAttribute("color", colors[index]);
+            // box.setAttribute("color", "#0062c6");
             //あとで一括削除するようにクラス名えっ邸
             box.setAttribute("class", "box");
             scene.appendChild(box);
