@@ -21,6 +21,7 @@
 
         function initRightHand() {
             rightHand = document.getElementById("rightHand");
+            let textbox = document.getElementById("textbox");
             //ピンチ開始
             rightHand.addEventListener("pinchstarted", (e) => {
                 let position = e.detail.position;
@@ -32,6 +33,7 @@
                 //色の番号を加算してあとでBoxに反映
                 index++;
                 index %= colors.length;
+                textbox.setAttribute("value", index);
             });
             //ピンチしながら手を移動
             rightHand.addEventListener("pinchmoved", (e) => {
@@ -50,7 +52,7 @@
             leftHand = document.getElementById("leftHand");
             leftHand.addEventListener("pinchstarted", (e) => {
                 let els = document.querySelectorAll(".box");
-                for(let i=0; I <els.length; i++){
+                for(let i=0; i <els.length; i++){
                     els[i].parentNode.removeChild(els[i]);
                 }
             })
@@ -75,8 +77,9 @@
 <body>
     <a-scene background="color:#ececec">
         <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4cc3d9" shadow></a-box>
-        <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:mesh;"></a-entity>
+        <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
         <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
+        <a-text id="textbox" value="Hello, World!" position="0 3 -3"></a-text>
     </a-scene>
 </body>
 
