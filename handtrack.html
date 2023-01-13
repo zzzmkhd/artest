@@ -10,7 +10,7 @@
         let leftHand;
         let prev; //最後にBoxを置いた位置を記憶する
         //Cubeに割り当てる色の配列
-        let colors = ["#0062c6", "00ab00","ffcf00","7f00ff","ffffff","ff2000","f52394","593110"]
+        let colors = ["#0062c6", "00ab00","ffcf00","7f00ff","ffffff","ff2000","f52394","593110"];
         let index = 0; // 利用する色の番号
 
         window.onload = () => {
@@ -47,6 +47,13 @@
 
         };
         function initLeftHand() {
+            leftHand = document.getElementById("leftHand");
+            leftHand.addEventListener("pinchstarted", (e) => {
+                let els = document.querySelectorAll(".box");
+                for(let i=0; I <els.length; i++){
+                    els[i].parentNode.removeChild(els[i]);
+                }
+            })
 
         };
         function addBox(position) {
