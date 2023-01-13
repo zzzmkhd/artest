@@ -10,7 +10,7 @@
         let leftHand;
         let prev; //最後にBoxを置いた位置を記憶する
         //Cubeに割り当てる色の配列
-        let colors = ["#0062c6", "00ab00","ffcf00","7f00ff","ffffff","ff2000","f52394","593110"];
+        let colors = ["#0062c6", "#00ab00","#ffcf00","#7f00ff","#ffffff","#ff2000","#f52394","#593110"];
         let index = 0; // 利用する色の番号
 
         window.onload = () => {
@@ -79,7 +79,7 @@
         <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4cc3d9" shadow></a-box>
         <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
         <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
-        <a-text id="textbox" value="Hello, World!" position="0 3 -3"></a-text>
+        <a-text id="textbox" value="Hello, World!" position="0 3 -3" color="#000000"></a-text>
     </a-scene>
 </body>
 
