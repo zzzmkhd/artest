@@ -12,16 +12,22 @@
         //Cubeに割り当てる色の配列
         let colors = ["#0062c6", "#00ab00","#ffcf00","#7f00ff","#ffffff","#ff2000","#f52394","#593110"];
         let index = 0; // 利用する色の番号
+        let tip;
 
         window.onload = () => {
             scene = document.querySelector("a-scene");
+            tip = document.getElementById("tip");
             initRightHand();
             initLeftHand();
         };
 
         function initRightHand() {
             rightHand = document.getElementById("rightHand");
+            tipTracking(rightHand.components['hand-tracking-controls']);
+            // console.log(rightHand.components);
+            // console.log(rightHand.components['hand-tracking-controls']);
             let textbox = document.getElementById("textbox");
+            console.log(textbox.components);
             //ピンチ開始
             rightHand.addEventListener("pinchstarted", (e) => {
                 let position = e.detail.position;
@@ -34,6 +40,8 @@
                 index++;
                 index %= colors.length;
                 textbox.setAttribute("value", index);
+                //指の先端の球にも入りを反映
+                tip.setAttribute('color', colors[index]);
             });
             //ピンチしながら手を移動
             rightHand.addEventListener("pinchmoved", (e) => {
@@ -70,6 +78,14 @@
             //最後にBoxを置いたところを記憶
             prev = box.object3D.position;
         }
+        function tipTracking(ctrl){
+            //指の先端の位置
+            let position = ctrl.indexTipPosition;
+            //指の位置を球に反映
+            tip.setAttribute('position', position);
+            //30ms後にtipTrackingを再度呼ぶ
+            setTimeout(()=>{tipTracking(ctrl);}, 30);
+        }
     </script>
 
 </head>
@@ -80,6 +96,7 @@
         <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
         <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
         <a-text id="textbox" value="Hello, World!" position="0 3 -3" color="#000000"></a-text>
+        <a-sphere id="tip" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere>
     </a-scene>
 </body>
 
