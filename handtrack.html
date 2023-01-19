@@ -64,7 +64,7 @@
                     els[i].parentNode.removeChild(els[i]);
                 }
                 let animal = document.getElementById("animal");
-                animal.setAttribute("gltf-model","#duck");
+                animal.setAttribute("src","#duck");
 
             })
 
@@ -102,11 +102,11 @@
         </a-assets>
 
 
-        <a-entity id="animal" gltf-model="#fox" scale="0.02 0.02 0.02" position="1 1 -2.5" rotation="0 -20 0"></a-entity>
+        <a-gltf-model id="animal" src="#fox" scale="0.02 0.02 0.02" position="1 1 -2.5" rotation="0 -20 0"></a-gltf-model>
         <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4cc3d9" shadow></a-box>
         <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
         <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
-        <a-text id="textbox" value="test" position="0 3 -3" color="#000000"></a-text>
+        <a-text id="textbox" value="test2" position="0 3 -3" color="#000000"></a-text>
         <a-sphere id="tip" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere>
         <a-entity camera wasd-controls="acceleration:50" position="0 1.6 0"></a-entity>
 
