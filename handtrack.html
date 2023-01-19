@@ -98,9 +98,9 @@
             <img id="tcard" src="tcard.jpg">
         </a-assets>
         <a-box hoverable grabbable stretchable draggable dropppable position="0 1.5 -1" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4cc3d9" shadow></a-box>
-        <a-entity id="leftHand" sphere-collider="objects: a-box" super-hands hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
-        <a-entity id="rightHand" sphere-collider="objects: a-box" super-hands hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
-        <a-text id="textbox" value="test" position="0 3 -3" color="#000000"></a-text>
+        <a-entity id="leftHand" sphere-collider="objects: a-box" super-hands hand-controls="left" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
+        <a-entity id="rightHand" sphere-collider="objects: a-box" super-hands hand-controls="rigth" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
+        <a-text id="textbox" value="test2" position="0 3 -3" color="#000000"></a-text>
         <!-- <a-sphere id="tip" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere> -->
         <a-plane id="tip" position="0 0 0" src="#tcard" scale="0.07 0.07 0.07"></a-plane>
         <a-entity camera wasd-controls="acceralation:50" position="0 1.6 0"></a-entity>
