@@ -1,4 +1,7 @@
 <html>
+    
+<!-- サンプル -->
+<!-- https://qiita.com/ysd_marrrr/items/249533f4b37d34db147d -->
 
 <head>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
@@ -32,18 +35,18 @@
                 });
 
                 el.addEventListener("raycaster-intersection", (e)=>{
-                    txt.setAttribute("value", "Raycster intersection");
-                    this.selectedObject = e.detail.els[0];
-                    console.log(e.detail);
+                    txt.setAttribute("value", "Raycaster intersection");
+                    // this.selectedObject = e.detail.els[0]; // サンプルのミス
+                    el.selectedObject = e.detail.els[0];
+                    //console.log(e.detail.els[0]); //<a-entity gltf-model="#fox" scale="0.02 0.02 0.02" position="0 0 -3" rotation="0 -20 0" class="collidable"></a-entity>
                 });
-                el.addEventListener("raycaster-intersection-clear", ()=>{
+                el.addEventListener("raycaster-intersection-cleared", ()=>{
                     txt.setAttribute("value", "");
                     this.selectedObject = null;
                 })
             },
             tick: function(){
                 let el = this.el;
-                console.log(el.selectedObject);
 
                 if(!el.selectedObject){
                     return;
@@ -51,6 +54,21 @@
                 if(!el.grip){
                     return;
                 }
+
+                //オブジェクトとぶつかったraycaster（コントローラ減点の座標）を取得
+                let ray = el.getAttribute('raycaster').direction;
+                console.log(ray)
+
+                //コントローラーから見たraycasterとの方向のみを取り出す
+                let p = new THREE.Vector3(ray.x, ray.y, ray.z);
+                p.normalize;
+
+                //raycasterとぶつかった部分と同じ位置にオブジェクトを動かす場合はfarと同じにする
+                //引き寄せる場合はfarより小さくする
+                el.object3D.localToWorld(p);
+
+                //オブジェクトを移動させる
+                el.selectedObject.object3D.position.set(p.x, p.y, p.z);
 
             }
         });
@@ -73,7 +91,7 @@
         <a-entity id="ctrlR" laser-controls="hand: right" raycaster="objects: .collidable;far: 2" vr-controller></a-entity>
 
         <a-entity camera look-controls position="0 1.5 0">
-            <a-text id="txt" value="test" position="0 -0.7 -1" scale="0.5 0.5 0.5" align="center"></a-text>
+            <a-text id="txt" value="test" position="0 -0.5 -1" scale="0.5 0.5 0.5" align="center"></a-text>
         </a-entity>
     </a-scene>
 </body>
