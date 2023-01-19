@@ -92,11 +92,15 @@
 
 <body>
     <a-scene background="color:#ececec">
+        <a-assets>
+            <img id="tcard" src="tcard.jpg">
+        </a-assets>
         <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" color="#4cc3d9" shadow></a-box>
         <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
         <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
         <a-text id="textbox" value="Hello, World!" position="0 3 -3" color="#000000"></a-text>
-        <a-sphere id="tip" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere>
+        <!-- <a-sphere id="tip" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere> -->
+        <a-plane id="tip" position="0 0 0" src="#tcard"></a-plane>
     </a-scene>
 </body>
 
