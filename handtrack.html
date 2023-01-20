@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>hand-tracking</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script>
         let scene;
         let rightHand;
@@ -40,7 +40,7 @@
                 //色の番号を加算してあとでBoxに反映
                 index++;
                 index %= colors.length;
-                textbox.setAttribute("value", index);
+                // textbox.setAttribute("value", index);
                 //指の先端の球にも入りを反映
                 tip.setAttribute('color', colors[index]);
             });
@@ -97,13 +97,16 @@
 <body>
     <a-scene background="color:#ececec">
         <a-assets>
-            <a-asset-item id="tcard" src="tcard.jpg"></a-asset-item>
+            <!-- <a-asset-item id="tcard" src="tcard.jpg"></a-asset-item> -->
             <a-asset-item id="fox" src="Fox.glb"></a-asset-item>
             <a-asset-item id="duck" src="Duck.glb"></a-asset-item>
         </a-assets>
+        <a-sphere id="tcard" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere>
+        <!-- <img id="tcard" src="tcard.jpg"> -->
 
 
-        <a-gltf-model id="animal" src="#fox" scale="0.02 0.02 0.02" position="1 1 -2.5" rotation="0 -20 0"></a-gltf-model>
+
+        <a-gltf-model id="animal" src="#fox" scale="0.02 0.02 0.02" position="1 1 -2.5" rotation="-20 -20 0"></a-gltf-model>
         <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" src="tcard.png" shadow></a-box>
         <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
         <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
