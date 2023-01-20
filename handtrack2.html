@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script>
+        let scene;
+        let rightHand;
+        let leftHand;
+        let prev; //最後にBoxを置いた位置を記憶する
+        //Cubeに割り当てる色の配列
+        let colors = ["#0062c6", "#00ab00","#ffcf00","#7f00ff","#ffffff","#ff2000","#f52394","#593110"];
+        let index = 0; // 利用する色の番号
+        let tip;
+
+        window.onload = () => {
+            scene = document.querySelector("a-scene");
+            tip = document.getElementById("tip");
+            initRightHand();
+            initLeftHand();
+        };
+
+        function initRightHand() {
+            rightHand = document.getElementById("rightHand");
+            tipTracking(rightHand.components['hand-tracking-controls']);
+            // console.log(rightHand.components);
+            // console.log(rightHand.components['hand-tracking-controls']);
+            let textbox = document.getElementById("textbox");
+            console.log(textbox.components);
+            //ピンチ開始
+            rightHand.addEventListener("pinchstarted", (e) => {
+                let position = e.detail.position;
+                //BOX生成関数
+                addBox(position);
+            });
+            //ピンチ終了
+            rightHand.addEventListener("pinchended", (e) => {
+                //色の番号を加算してあとでBoxに反映
+                index++;
+                index %= colors.length;
+                textbox.setAttribute("value", index);
+                //指の先端の球にも入りを反映
+                tip.setAttribute('color', colors[index]);
+            });
+            //ピンチしながら手を移動
+            rightHand.addEventListener("pinchmoved", (e) => {
+                let position = e.detail.position;
+                let length = prev.distanceTo(position);
+                //一定距離以上ならboxを置く
+                if (length >= 0.02) {
+                    //BOX生成
+                    addBox(position);
+                }
+
+            })
+
+        };
+        function initLeftHand() {
+            leftHand = document.getElementById("leftHand");
+            leftHand.addEventListener("pinchstarted", (e) => {
+                let els = document.querySelectorAll(".box");
+                for(let i=0; i <els.length; i++){
+                    els[i].parentNode.removeChild(els[i]);
+                }
+            })
+
+        };
+        function addBox(position) {
+            let box = document.createElement("a-box");
+            box.setAttribute("position", position);
+            box.setAttribute("scale", "0.02 0.02 0.02");
+            box.setAttribute("color", colors[index]);
+            // box.setAttribute("color", "#0062c6");
+            //あとで一括削除するようにクラス名えっ邸
+            box.setAttribute("class", "box");
+            scene.appendChild(box);
+            //最後にBoxを置いたところを記憶
+            prev = box.object3D.position;
+        }
+        function tipTracking(ctrl){
+            //指の先端の位置
+            let position = ctrl.indexTipPosition;
+            //指の位置を球に反映
+            tip.setAttribute('position', position);
+            //30ms後にtipTrackingを再度呼ぶ
+            setTimeout(()=>{tipTracking(ctrl);}, 30);
+        }
+    </script>
+
+</head>
+
+<body>
+    <a-asset-items>
+        <a-asset-item id="tcard" src="tcard.jpg"></a-asset-item>
+    </a-asset-items>
+    <a-scene background="color:#ececec">
+        <a-gltf-model id="animal" src="#fox" scale="0.02 0.02 0.02" position="1 1 -2.5" rotation="-20 -20 0"></a-gltf-model>
+        <a-box position="0 1.5 -2" scale="0.5 0.5 0.5" rotation="0 45 0" src="tcard.png" shadow></a-box>
+
+        <a-entity id="leftHand" hand-tracking-controls="hand:left; modelStyle:dots;"></a-entity>
+        <a-entity id="rightHand" hand-tracking-controls="hand:right; modelStyle:dots;"></a-entity>
+        <a-text id="textbox" value="Hello, World!" position="0 3 -3" color="#000000"></a-text>
+        <a-sphere id="tip2" position="0 0 0" radius="0.015" color="#0062c6"></a-sphere>
+        <a-plane id="tip" position="0 0 0" src="#tcard" scale="0.07 0.07 0.07"></a-plane>
+
+
+    </a-scene>
+</body>
+
+</html>
