@@ -160,14 +160,17 @@
                 <a-entity id="raycaster-r" raycaster="objects: .collidable; far: 1; direction:-1 0 0"></a-entity>
             </a-camera>
             <!--コントローラ-->
-            <a-entity oculus-touch-controls="hand: left"></a-entity>
-            <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls wall-collider></a-entity>
+            <!-- <a-entity oculus-touch-controls="hand: left"></a-entity>
+            <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls wall-collider></a-entity> -->
+
+            <a-entity id="ctrlL" oculus-touch-controls="hand: left" laser-controls="hand: left" raycaster="objects: .collidable;far: 2"
+                vr-controller></a-entity>
+            <a-entity id="ctrlR" oculus-touch-controls="hand: right" oculus-thumbstick-controls laser-controls="hand: right" raycaster="objects: .collidable;far: 2"
+                vr-controller></a-entity>
+
+
         </a-entity>
 
-        <a-entity id="ctrlL" laser-controls="hand: left" raycaster="objects: .collidable;far: 2"
-            vr-controller></a-entity>
-        <a-entity id="ctrlR" laser-controls="hand: right" raycaster="objects: .collidable;far: 2"
-            vr-controller></a-entity>
 
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
