@@ -52,8 +52,6 @@
         dependency: ['raycaster'],
         init: function () {
 
-            let textbox = document.getElementById("textbox");
-
             this.el.addEventListener('raycaster-intersection', (evt) => {
                 console.log(evt.target);;
                 console.log(this.data.raycaster)
@@ -67,29 +65,32 @@
                 this.face = null;
             });
 
-
-            //Xボタンを押した時(左手のみ)
-            this.el.addEventListener('xbuttondown', function (e) {
-                //テレポート先の選択を開始
-                textbox.setAttribute("value","xbuttondown");
-                this.emit('teleportstart');
-            });
-
-            //Xボタンを離した時(左手)
-            this.el.addEventListener('xbuttonup', function (e) {
-                //指定した先にジャンプ
-                textbox.setAttribute("value","xbuttonup");
-                
-                this.emit('teleportend');
-            });
-
-
         },
 
         tick: function () {
             if (!this.face) return;
             this.el.object3D.position.add(this.face.multiplyScalar(0.5));
         },
+    });
+    AFRAME.registerComponent('teleport', {
+        init: function () {
+            let textbox = document.getElementById("textbox");
+
+            //Xボタンを押した時(左手のみ)
+            this.el.addEventListener('xbuttondown', function (e) {
+                //テレポート先の選択を開始
+                textbox.setAttribute("value", "xbuttondown");
+                this.emit('teleportstart');
+            });
+
+            //Xボタンを離した時(左手)
+            this.el.addEventListener('xbuttonup', function (e) {
+                //指定した先にジャンプ
+                textbox.setAttribute("value", "xbuttonup");
+
+                this.emit('teleportend');
+            });
+        }
     });
 </script>
 
@@ -114,8 +115,8 @@
             <!--コントローラ-->
             <a-entity teleport-controls="cameraRig: #cameraRig; teleportOrigin:#head; 
                                       startEvents: teleportstart;  endEvents: teleportend"
-                oculus-touch-controls="hand: left" raycaster input-listen> </a-entity>
-            <a-entity oculus-touch-controls="hand: right" raycaster input-listen> </a-entity>
+                oculus-touch-controls="hand: left" raycaster teleport> </a-entity>
+            <a-entity oculus-touch-controls="hand: right" raycaster teleport> </a-entity>
         </a-entity>
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
