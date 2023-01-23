@@ -163,10 +163,15 @@
             <!-- <a-entity oculus-touch-controls="hand: left"></a-entity>
             <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls wall-collider></a-entity> -->
 
-            <a-entity id="ctrlL" oculus-touch-controls="hand: left" laser-controls="hand: left" raycaster="objects: .collidable;far: 2"
+            <a-entity id="ctrlL" laser-controls="hand: left" raycaster="objects: .collidable;far: 2"
+                vr-controller></a-entity>
+            <a-entity id="ctrlR" laser-controls="hand: right" oculus-thumbstick-controls raycaster="objects: .collidable;far: 2"
+                vr-controller></a-entity>
+
+                <!-- <a-entity id="ctrlL" oculus-touch-controls="hand: left" laser-controls="hand: left" raycaster="objects: .collidable;far: 2"
                 vr-controller></a-entity>
             <a-entity id="ctrlR" oculus-touch-controls="hand: right" oculus-thumbstick-controls laser-controls="hand: right" raycaster="objects: .collidable;far: 2"
-                vr-controller></a-entity>
+                vr-controller></a-entity> -->
 
 
         </a-entity>
