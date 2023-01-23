@@ -12,9 +12,6 @@
 </head>
 
 <script type="text/javascript">
-    /**
-     * 地面に立つためのコンポーネント（前回記事の範囲）
-     */
     AFRAME.registerComponent('stand-on', {
         schema: {
             raycaster: { type: 'selector' },
@@ -42,7 +39,7 @@
     });
 
     /**
-     * 前後左右のヒット（今回記事の範囲）
+     * 前後左右のヒット
      */
     AFRAME.registerComponent('wall-collider', {
         schema: {
@@ -72,6 +69,8 @@
             this.el.object3D.position.add(this.face.multiplyScalar(0.5));
         },
     });
+
+    /* teleportする。衝突判定は効かない */
     AFRAME.registerComponent('teleport', {
         init: function () {
             let textbox = document.getElementById("textbox");
@@ -115,8 +114,8 @@
             <!--コントローラ-->
             <a-entity teleport-controls="cameraRig: #cameraRig; teleportOrigin:#head; 
                                       startEvents: teleportstart;  endEvents: teleportend"
-                oculus-touch-controls="hand: left" raycaster teleport> </a-entity>
-            <a-entity oculus-touch-controls="hand: right" raycaster teleport> </a-entity>
+                oculus-touch-controls="hand: left" raycaster teleport wall-collider> </a-entity>
+            <a-entity oculus-touch-controls="hand: right" raycaster teleport wall-collider> </a-entity>
         </a-entity>
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
