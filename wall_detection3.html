@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script
+        src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
 
     <title>壁衝突</title>
 </head>
@@ -50,6 +51,9 @@
         multiple: true,
         dependency: ['raycaster'],
         init: function () {
+
+            let textbox = document.getElementById("textbox");
+
             this.el.addEventListener('raycaster-intersection', (evt) => {
                 console.log(evt.target);;
                 console.log(this.data.raycaster)
@@ -64,18 +68,21 @@
             });
 
 
-          //Xボタンを押した時(左手のみ)
-          this.el.addEventListener('xbuttondown', function (e) {
-            //テレポート先の選択を開始
-            this.emit('teleportstart');
-          });
-          
-          //Xボタンを離した時(左手)
-          this.el.addEventListener('xbuttonup', function (e) {
-            //指定した先にジャンプ
-            this.emit('teleportend');
-          });
-          
+            //Xボタンを押した時(左手のみ)
+            this.el.addEventListener('xbuttondown', function (e) {
+                //テレポート先の選択を開始
+                textbox.setAttribute("value","xbuttondown");
+                this.emit('teleportstart');
+            });
+
+            //Xボタンを離した時(左手)
+            this.el.addEventListener('xbuttonup', function (e) {
+                //指定した先にジャンプ
+                textbox.setAttribute("value","xbuttonup");
+                
+                this.emit('teleportend');
+            });
+
 
         },
 
@@ -93,23 +100,23 @@
         </a-assets>
 
         <a-entity id="cameraRig">
-        <a-camera id="head" wall-collider__f="raycaster:#raycaster-f" wall-collider__b="raycaster:#raycaster-b"
-            wall-collider__r="raycaster:#raycaster-r" wall-collider__l="raycaster:#raycaster-l"
-            stand-on="raycaster:#stand-on-ray">
-            <a-entity id="stand-on-ray" raycaster="objects: .ground; direction:0 -1 0"></a-entity>
+            <a-camera id="head" wall-collider__f="raycaster:#raycaster-f" wall-collider__b="raycaster:#raycaster-b"
+                wall-collider__r="raycaster:#raycaster-r" wall-collider__l="raycaster:#raycaster-l"
+                stand-on="raycaster:#stand-on-ray">
+                <a-entity id="stand-on-ray" raycaster="objects: .ground; direction:0 -1 0"></a-entity>
 
-            <!-- 四方のレイキャスターを定義 -->
-            <a-entity id="raycaster-f" raycaster="objects: .collidable; far: 1; direction:0 0 -1"></a-entity>
-            <a-entity id="raycaster-b" raycaster="objects: .collidable; far: 1; direction:0 0 1"></a-entity>
-            <a-entity id="raycaster-l" raycaster="objects: .collidable; far: 1; direction:1 0 0"></a-entity>
-            <a-entity id="raycaster-r" raycaster="objects: .collidable; far: 1; direction:-1 0 0"></a-entity>
-        </a-camera>
-        <!--コントローラ-->
-        <a-entity teleport-controls= "cameraRig: #cameraRig; teleportOrigin:#head; 
+                <!-- 四方のレイキャスターを定義 -->
+                <a-entity id="raycaster-f" raycaster="objects: .collidable; far: 1; direction:0 0 -1"></a-entity>
+                <a-entity id="raycaster-b" raycaster="objects: .collidable; far: 1; direction:0 0 1"></a-entity>
+                <a-entity id="raycaster-l" raycaster="objects: .collidable; far: 1; direction:1 0 0"></a-entity>
+                <a-entity id="raycaster-r" raycaster="objects: .collidable; far: 1; direction:-1 0 0"></a-entity>
+            </a-camera>
+            <!--コントローラ-->
+            <a-entity teleport-controls="cameraRig: #cameraRig; teleportOrigin:#head; 
                                       startEvents: teleportstart;  endEvents: teleportend"
-              oculus-touch-controls="hand: left" raycaster input-listen>  </a-entity>
-        <a-entity oculus-touch-controls="hand: right" raycaster input-listen> </a-entity>
-    </a-entity>
+                oculus-touch-controls="hand: left" raycaster input-listen> </a-entity>
+            <a-entity oculus-touch-controls="hand: right" raycaster input-listen> </a-entity>
+        </a-entity>
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
         <a-box color="purple" position="-10 7.5 0" rotation="0 0 0" class="collidable" scale="1 15 15"></a-box>
@@ -121,6 +128,9 @@
         <a-box color="red" class="collidable" position="0 1 -4" scale="2 2 2"></a-box>
         <a-box color="yellow" class="collidable" position="6 1 -4" scale="2 2 2"></a-box>
         <a-entity gltf-model="#fox" class="collidable" position="-7 0 -6" scale="0.04 0.04 0.04"></a-entity>
+
+        <a-text id="textbox" value="test2" position="0 3 -3" color="#000000"></a-text>
+
     </a-scene>
 </body>
 
