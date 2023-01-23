@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script
-        src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <!-- <script
+        src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script> -->
 
     <title>壁衝突</title>
     <script src="./oculus-thumbstick-controls.js"></script>
@@ -94,10 +94,10 @@
                 <a-entity id="raycaster-r" raycaster="objects: .collidable; far: 1; direction:-1 0 0"></a-entity>
             </a-camera>
             <!--コントローラ-->
-            <a-entity oculus-touch-controls="hand: left" ></a-entity>
+            <a-entity oculus-touch-controls="hand: left"></a-entity>
             <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls></a-entity>
         </a-entity>
-        </a-entity>
+
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
         <a-box color="purple" position="-10 7.5 0" rotation="0 0 0" class="collidable" scale="1 15 15"></a-box>
