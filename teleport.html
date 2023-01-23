@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR Fukuoka</title>
+    <!--A-Frame-->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <!--テレポート用コードのインポート-->
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <!--物理演算用コードのインポート(メンテナンス終了)-->
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+  </head>
+  <body>
+     <script>
+      AFRAME.registerComponent('input-listen', {
+        //初期化
+        init: function () {
+        },
+
+        //毎フレーム更新 (今回は使わない)
+        tick: function () {
+        }
+      });
+    </script>
+    <a-scene background="color: #FAFAFA">
+      <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane position="0 5 0" rotation="90 0 0" width="10" height="10" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane position="0 2.5 -5" rotation="0 0 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane position="0 2.5 5" rotation="0 180 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane position="5 2.5 0" rotation="0 -90 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane position="-5 2.5 0" rotation="0 90 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <!--コントローラ-->
+      <a-entity oculus-touch-controls="hand: left" input-listen> </a-entity>
+      <a-entity oculus-touch-controls="hand: right" input-listen> </a-entity>
+
+    </a-scene>
+  </body>
+</html>
