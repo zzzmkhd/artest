@@ -101,13 +101,13 @@
             });
 
             el.addEventListener("raycaster-intersection", (e) => {
-                txt.setAttribute("value", "Raycaster intersection");
+                // txt.setAttribute("value", "Raycaster intersection");
                 // this.selectedObject = e.detail.els[0]; // サンプルのミス
                 el.selectedObject = e.detail.els[0];
                 //console.log(e.detail.els[0]); //<a-entity gltf-model="#fox" scale="0.02 0.02 0.02" position="0 0 -3" rotation="0 -20 0" class="collidable"></a-entity>
             });
             el.addEventListener("raycaster-intersection-cleared", () => {
-                txt.setAttribute("value", "");
+                // txt.setAttribute("value", "");
                 this.selectedObject = null;
             })
         },
