@@ -89,6 +89,18 @@
 
                 this.emit('teleportend');
             });
+
+            this.el.addEventListener('thumbsticktouchstart', function (e) {
+                textbox.setAttribute("value", "xbuttonup");
+                // this.emit('teleportstart');
+            });
+
+            this.el.addEventListener('thumbsticktouchend', function (e) {
+                textbox.setAttribute("value", "xbuttonup");
+                // this.emit('teleportend');
+            });
+
+
         }
     });
 </script>
@@ -115,7 +127,7 @@
             <a-entity teleport-controls="cameraRig: #cameraRig; teleportOrigin:#head; 
                                       startEvents: teleportstart;  endEvents: teleportend"
                 oculus-touch-controls="hand: left" raycaster teleport wall-collider> </a-entity>
-            <a-entity oculus-touch-controls="hand: right" raycaster teleport wall-collider> </a-entity>
+            <a-entity oculus-touch-controls="hand: right" raycaster teleport oculus-thumbstick-controls> </a-entity>
         </a-entity>
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
