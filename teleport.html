@@ -4,17 +4,87 @@
     <meta charset="utf-8">
     <title>AR Fukuoka</title>
     <!--A-Frame-->
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <!--テレポート用コードのインポート-->
     <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <!--物理演算用コードのインポート(メンテナンス終了)-->
     <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <!--箱を積み重ねた壁を作る-->
+    <!-- <script src="WallGenerator.js"></script>   -->
   </head>
   <body>
      <script>
+      window.onload=function(){
+        CreateBoxes();
+      }
       AFRAME.registerComponent('input-listen', {
         //初期化
         init: function () {
+          //トリガーを押した時(両手)
+          this.el.addEventListener('triggerdown', function (e) {
+            //"this"はここでは、右/左のコントローラを意味する
+            //コントローラの3次元的な位置を取得
+            var point = this.object3D.getWorldPosition();
+            //ボールを生成
+            var ball = document.createElement('a-sphere');
+            ball.setAttribute('position', point);
+            ball.setAttribute('scale', '0.2 0.2 0.2');
+            ball.setAttribute('class', 'ball');
+            //物理演算を適用
+            ball.setAttribute('dynamic-body', 'shape: sphere; sphereRadius:0.2; ');
+            //a-sceneにアクセス
+            var scene = document.querySelector('a-scene');
+            //弾(ボール)をVR空間に追加して登場させる
+            scene.appendChild(ball);
+            
+            //コントローラのレイキャスターを取得
+            var dir = this.getAttribute("raycaster").direction;
+            //コントローラに対するレイの向きと力を設定
+            var force = new THREE.Vector3(dir.x, dir.y, dir.z);
+            force.multiplyScalar(2500);    
+            //ボールにforceというプロパティを宣言して代入
+            ball.force = this.object3D.localToWorld(force);
+            //物理演算の準備ができたら上記で設定した力を加える
+            ball.addEventListener('body-loaded', function (e) {
+              var p = this.object3D.position;
+              var f = this.force;
+              this.body.applyForce(
+                new CANNON.Vec3(f.x, f.y, f.z),
+                new CANNON.Vec3(p.x, p.y, p.z)
+              );
+            });
+          });
+          //Aボタンを押した時(右手のみ) 
+          this.el.addEventListener('abuttondown', function (e) {
+            //全ての弾(クラス名=.ball)を取得
+            var els = document.querySelectorAll('.ball');
+            //ボールを一つ一つ削除
+            for (var i = 0; i < els.length; i++) {
+              els[i].parentNode.removeChild(els[i]);
+            }
+          });
+          //Bボタンを押した時(右手のみ)
+          this.el.addEventListener('bbuttondown', function (e) {
+            //全ての箱(クラス名=.box)を取得
+            var els=document.querySelectorAll('.box');
+            for (var i = 0; i < els.length; i++) {
+              els[i].parentNode.removeChild(els[i]);
+            }
+            //再び箱を生成
+            CreateBoxes();
+          });
+          //Xボタンを押した時(左手のみ)
+          this.el.addEventListener('xbuttondown', function (e) {
+            //テレポート先の選択を開始
+            this.emit('teleportstart');
+          });
+          
+          //Xボタンを離した時(左手)
+          this.el.addEventListener('xbuttonup', function (e) {
+            //指定した先にジャンプ
+            this.emit('teleportend');
+          });
+
         },
 
         //毎フレーム更新 (今回は使わない)
@@ -22,17 +92,21 @@
         }
       });
     </script>
-    <a-scene background="color: #FAFAFA">
-      <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
-      <a-plane position="0 5 0" rotation="90 0 0" width="10" height="10" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
-      <a-plane position="0 2.5 -5" rotation="0 0 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
-      <a-plane position="0 2.5 5" rotation="0 180 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
-      <a-plane position="5 2.5 0" rotation="0 -90 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
-      <a-plane position="-5 2.5 0" rotation="0 90 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
-      <!--コントローラ-->
-      <a-entity oculus-touch-controls="hand: left" input-listen> </a-entity>
-      <a-entity oculus-touch-controls="hand: right" input-listen> </a-entity>
-
+    <a-scene physics="gravity: 0; restitution: 0.9;" background="color: #FAFAFA">
+      <a-plane static-body position="0 0 0" rotation="-90 0 0" width="10" height="10" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane static-body position="0 5 0" rotation="90 0 0" width="10" height="10" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane static-body position="0 2.5 -5" rotation="0 0 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane static-body position="0 2.5 5" rotation="0 180 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane static-body position="5 2.5 0" rotation="0 -90 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-plane static-body position="-5 2.5 0" rotation="0 90 0" width="10" height="5" src="https://cdn.glitch.com/65bc2bcc-6694-4bf0-8fb4-d960cc63a827%2Fback.png?v=1605320133421" shadow></a-plane>
+      <a-entity id="cameraRig">
+        <a-entity id="head" camera> </a-entity>
+        <!--コントローラ-->
+        <a-entity teleport-controls= "cameraRig: #cameraRig; teleportOrigin:#head; 
+                                      startEvents: teleportstart;  endEvents: teleportend"
+              oculus-touch-controls="hand: left" raycaster input-listen>  </a-entity>
+        <a-entity oculus-touch-controls="hand: right" raycaster input-listen> </a-entity>
+      </a-entity>
     </a-scene>
   </body>
 </html>
