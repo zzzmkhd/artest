@@ -72,6 +72,72 @@
         },
     });
 
+    AFRAME.registerComponent("vr-controller", {
+        init: function () {
+            const txt = document.getElementById("txt");
+            const el = this.el;
+
+            //raycaserにぶつかったオブジェクト
+            el.selectedObject = null;
+
+            //コントローラのグリップボタンが押されているか
+            el.grip = false;
+
+            el.addEventListener('triggerdown', (event) => {
+                txt.setAttribute("value", "Trigger down");
+                el.grip = true;
+            });
+            el.addEventListener('triggerup', (event) => {
+                txt.setAttribute("value", "Trigger Up");
+                el.grip = false;
+            });
+            el.addEventListener('gripdown', (event) => {
+                txt.setAttribute("value", "Grip down");
+                el.grip = true;
+            });
+            el.addEventListener('gripup', (event) => {
+                txt.setAttribute("value", "Grip Up");
+                el.grip = false;
+            });
+
+            el.addEventListener("raycaster-intersection", (e) => {
+                txt.setAttribute("value", "Raycaster intersection");
+                // this.selectedObject = e.detail.els[0]; // サンプルのミス
+                el.selectedObject = e.detail.els[0];
+                //console.log(e.detail.els[0]); //<a-entity gltf-model="#fox" scale="0.02 0.02 0.02" position="0 0 -3" rotation="0 -20 0" class="collidable"></a-entity>
+            });
+            el.addEventListener("raycaster-intersection-cleared", () => {
+                txt.setAttribute("value", "");
+                this.selectedObject = null;
+            })
+        },
+        tick: function () {
+            let el = this.el;
+
+            if (!el.selectedObject) {
+                return;
+            }
+            if (!el.grip) {
+                return;
+            }
+
+            //オブジェクトとぶつかったraycaster（コントローラ減点の座標）を取得
+            let ray = el.getAttribute('raycaster').direction;
+            console.log(ray)
+
+            //コントローラーから見たraycasterとの方向のみを取り出す
+            let p = new THREE.Vector3(ray.x, ray.y, ray.z);
+            p.normalize;
+
+            //raycasterとぶつかった部分と同じ位置にオブジェクトを動かす場合はfarと同じにする
+            //引き寄せる場合はfarより小さくする
+            el.object3D.localToWorld(p);
+
+            //オブジェクトを移動させる
+            el.selectedObject.object3D.position.set(p.x, p.y, p.z);
+
+        }
+    });
 
 </script>
 
@@ -82,7 +148,7 @@
         </a-assets>
 
         <a-entity id="rig">
-            <a-camera id="head" wall-collider__f="raycaster:#raycaster-f" wall-collider__b="raycaster:#raycaster-b"
+            <a-camera wall-collider__f="raycaster:#raycaster-f" wall-collider__b="raycaster:#raycaster-b"
                 wall-collider__r="raycaster:#raycaster-r" wall-collider__l="raycaster:#raycaster-l"
                 stand-on="raycaster:#stand-on-ray">
                 <a-entity id="stand-on-ray" raycaster="objects: .ground; direction:0 -1 0"></a-entity>
@@ -95,8 +161,13 @@
             </a-camera>
             <!--コントローラ-->
             <a-entity oculus-touch-controls="hand: left"></a-entity>
-            <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls></a-entity>
+            <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls wall-collider></a-entity>
         </a-entity>
+
+        <a-entity id="ctrlL" laser-controls="hand: left" raycaster="objects: .collidable;far: 2"
+            vr-controller></a-entity>
+        <a-entity id="ctrlR" laser-controls="hand: right" raycaster="objects: .collidable;far: 2"
+            vr-controller></a-entity>
 
         <a-plane color="green" position="0 0 0" rotation="-90 0 0" scale="20 15 0"></a-plane>
         <a-plane color="purple" position="0 7.5 -7.5" rotation="0 0 0" class="collidable" scale="20 15 15"></a-plane>
