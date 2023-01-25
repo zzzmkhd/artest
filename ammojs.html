@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>あも</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://mixedreality.mozilla.org/ammo.js/builds/ammo.wasm.js"></script>
+    <script src="//cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <script>
+        AFRAME.registerComponent("collider", {
+            init: function () {
+                const el = this.el;
+                el.addEventListener("collidestart", function (e) {
+                    console.log("衝突");
+                    el.setAttribute("color", "red");
+                    console.log(e.target.id);
+                });
+                el.addEventListener("collideend", function (e) {
+                    console.log("終了");
+
+                });
+                el.addEventListener("click", (e) => {
+                    console.log(e);
+                })
+
+            },
+            tick: function () {
+                // const el = this.el;
+                let cam = document.getElementById("camera-real");
+                // console.log("***" + cam);
+                let pos = cam.getAttribute("position")
+                // let pos2 = new THREE.Vector3(-1, 1.5, -3);
+                // console.log(pos);
+                let ck = document.getElementById("ck");
+                ck.setAttribute("position", pos)
+                let pos3 = ck.getAttribute("position")
+                // console.log(pos3);
+
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <a-scene vr-mode-ui="enabled:false" physics="driver: ammo; debug: true; ">
+        <!-- 当たり判定を付与したオブジェクト -->
+        <a-box id="id_dynamic" collider ammo-body="type: dynamic; emitCollisionEvents: true;" ammo-shape="type: box"
+            position="0.5 5 0.5"></a-box>
+
+        <a-box id="id_static" color="yellow" collider ammo-body="type: dynamic;" ammo-shape="type: box"
+        position="0 0.5 0"></a-box>
+        <a-plane id="id3" ammo-body="type: static" ammo-shape="type: box" position="0 0 0" rotation="-90 0 0"
+            scale="7 5 1" color="#fff"></a-plane>
+        <a-sky color="#000990"></a-sky>
+        <a-entity id="camera-real" camera look-controls wasd-controls position="0 0.5 0">
+            <!-- <a-box collider ammo-body="type: dynamic;"></a-box> -->
+            <a-cursor></a-cursor>
+        </a-entity>
+        <!-- </a-entity> -->
+        <a-box id="ck" color="green" position="1 0.5 0" collider ammo-body="type: static; emitCollisionEvents: true;" ammo-shape="type: box"></a-box>
+        <!-- <a-box id="ck" color="green" collider ammo-body="type: dynamic;" ammo-shape="type: box"></a-box> -->
+
+    </a-scene>
+</body>
+
+</html>
