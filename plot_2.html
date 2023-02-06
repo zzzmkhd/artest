@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>plot1</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+  <script src="./oculus-thumbstick-controls.js"></script>
+  <!-- <script src="./func.js"></script> -->
+
+
+
+</head>
+<script>
+  // alert(result);
+  // console.log(result[4937][1]);
+
+
+  let scene;
+  let plots = ["-1 2 -3", "3 0 -4"];
+  let plots2 = [["-1 2 0", "text111"], ["2 4 -1", "text2"]];
+  let plotsv3 = new THREE.Vector3(-1, -2, -3);
+
+  let colors = {'800000.0':"red", "nan":"black", '100000.0':"orange", '200000.0':"blue", '700000.0':"green", '900000.0':"pink",'0.0':"grey", '500000.0':"white", '400000.0':"purple"};
+
+  window.onload = () => {
+    scene = document.querySelector("a-scene");;
+  }
+
+
+  function addPlot(result, type = "a-sphere", txt = "") {
+    let position = result[2] + ' ' + result[3] + ' ' +  result[4];
+    let daibunrui = result[5];
+    let shohin = result[1];
+    let plot = document.createElement(type);
+    plot.setAttribute("position", position);
+    plot.setAttribute("scale", "0.2 0.2 0.2");
+    plot.setAttribute("class", daibunrui);
+    plot.setAttribute("color",colors[daibunrui]);
+    plot.setAttribute("click", "");
+    plot.setAttribute("title",result[0]); //仮：JANコードを設定
+    // plot.setAttribute("textContent","cupnoodle"); //これは設定されない
+
+    scene.appendChild(plot);
+  }
+
+
+  AFRAME.registerComponent('click', {
+    init: function () {
+      this.el.addEventListener('click', (e) => {
+        console.log(e);
+        console.log(';click');
+        console.log(e.target.title);
+        let textEl = document.createElement("a-text");
+        textEl.setAttribute("value",e.target.title);
+        textEl.setAttribute("position",e.target.object3D.position);
+        console.log(e.target.object3D.position);
+        // console.log(scene.camera.rotation); //これ自体は常に0となる
+        textEl.setAttribute("color","red");
+        scene.appendChild(textEl);
+        
+        setTimeout(() => {scene.removeChild(textEl)},5000);
+      })
+    },
+  });
+
+  let result = [];
+
+  function getCSV(fname) {
+    let req = new XMLHttpRequest();
+    req.open("get", fname, true);
+    req.send(null);
+    req.onload = () => {
+      convertCSVtoArray(req.responseText);
+    }
+
+  }
+
+  function convertCSVtoArray(str) {
+    let tmp = str.split("\n");
+
+    for (let i = 0; i < tmp.length; ++i) {
+      result[i] = tmp[i].split(',');
+    }
+
+  }
+
+  function addPlotFromCSV(){
+  console.log(result.length);
+  for (let i = 0; i < result.length-1; ++i) {
+    if(result[i][12] == ''){
+      console.log("null");
+      continue;
+    }
+    pos = result[i][2] + ' ' + result[i][3] + ' ' +  result[i][4];
+      // addPlot(pos,"a-sphere","test");
+      addPlot(result[i]);
+      
+    }
+    console.log(result[6]);
+  }
+
+  getCSV("similar_item_search_tsne_3d_2022122601.csv");
+  setTimeout(addPlotFromCSV,5000);
+
+
+
+</script>
+
+<body>
+  <a-scene background="color: #ECECEC">
+    <a-sky src="360_illust.jpg"></a-sky>
+    <a-sphere scale="0.2 0.2 0.2" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow click></a-sphere>
+    <a-octahedron scale="0.2 0.2 0.2" color="#FF926B" position="2 1.5 -5" radius="5"></a-octahedron>
+    <!-- <a-entity camera look-controls wasd-controls="acceleration:50" position="0 1.7 0">
+        <a-cursor></a-cursor> -->
+    </a-entity>
+
+    <!-- Camera + controllers rig -->
+    <a-entity id="rig">
+      <a-camera position="0 1.6 0"><a-cursor></a-cursor></a-camera>
+      <a-entity oculus-touch-controls="hand: left"></a-entity>
+      <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls></a-entity>
+    </a-entity>
+
+  </a-scene>
+
+  <script>
+    // console.log(result);
+  </script>
+
+</body>
+
+</html>
