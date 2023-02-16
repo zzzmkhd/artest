@@ -19,8 +19,8 @@
         <a-entity charts="type: bubble; dataPoints: ./data/data_chart.json ;show_popup_info: false"></a-entity>
         <!-- <a-entity charts="type: bubble; dataPoints: ../data/dataPositive.json"></a-entity> -->
 
-        <a-entity position="2 10 14" rotation="-30 15 0">
-            <a-camera position="3 -1 4" rotation="0 -1 0"></a-camera>
+        <a-entity id="rig" position="2 10 14" rotation="-30 15 0">
+            <a-camera id="cam" position="3 -1 4" rotation="0 -1 0"></a-camera>
             <a-entity oculus-touch-controls="hand: left"></a-entity>
             <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls></a-entity>
         </a-entity>
