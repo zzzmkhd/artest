@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>A-Frame A-Charts Component - Bubble</title>
+    <meta name="description" content="Bubble example for A-Charts component." />
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-charts-component/dist/aframe-charts-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@1.0.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="./oculus-thumbstick-controls.js"></script>
+
+</head>
+
+<body>
+
+    <a-scene background="color: grey" cursor="rayOrigin:mouse">
+        <!-- <a-light type="point" intensity="1" position="-2 10 10"></a-light> -->
+        <a-entity charts="type: bubble; dataPoints: ./data/data_chart.json ;show_popup_info: false"></a-entity>
+        <!-- <a-entity charts="type: bubble; dataPoints: ../data/dataPositive.json"></a-entity> -->
+
+        <a-entity position="2 10 14" rotation="-30 15 0">
+            <a-camera position="3 -1 4" rotation="0 -1 0"></a-camera>
+            <a-entity oculus-touch-controls="hand: left"></a-entity>
+            <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls></a-entity>
+        </a-entity>
+    </a-scene>
+
+</body>
+
+</html>
