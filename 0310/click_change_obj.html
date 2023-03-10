@@ -1,0 +1,91 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>switch gltf</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <!-- <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script> -->
+  <script>
+
+    AFRAME.registerComponent('cube', {
+      init: function () {
+        this.el.addEventListener('click', () => {
+          const mesh = this.el.object3D.getObjectByName('Cylinder');
+          console.log(mesh);
+          if (mesh) {
+            mesh.material.wireframe = !mesh.material.wireframe;
+          }
+        })
+      },
+    });
+
+    AFRAME.registerComponent('button', {
+      init: function () {
+        this.el.addEventListener('click', (e) => {
+          const mesh = document.querySelector("#cube2").object3D.getObjectByName("Cube");
+          console.log(mesh);
+
+          let colormap = [0, 0, 0];
+          const num = e.target.id.replace("btn", "");
+          colormap[num] = 1;
+
+          if (mesh) {
+            [mesh.material.color.r, mesh.material.color.g, mesh.material.color.b] = colormap;
+            colormap = [0, 0, 0];
+
+          }
+          let animal = document.getElementById("animal");
+          let current_animal = animal.getAttribute('gltf-model');
+          console.log(current_animal);
+          //current_animal == "#fox"だと動作しない
+          // if (current_animal == "Fox.glb") {
+          if (current_animal == "Sofa.glb") {
+          // if (current_animal == "#fox") {
+            current_animal = "#duck";
+          } else {
+            current_animal = "#fox";
+          }
+          //1度removeAttributeしないとタグのエラーが出る
+          animal.removeAttribute('gltf-model');
+          animal.setAttribute("gltf-model", current_animal);
+
+        })
+      },
+    });
+  </script>
+</head>
+
+<body>
+
+  <a-scene background="color: #ddffdd" vr-mode-ui="enabled: false">
+    <a-entity camera look-controls wasd-controls="acceleration:50" position="0 1.7 0">
+      <a-cursor></a-cursor>
+    </a-entity>
+    <a-assets>
+      <a-asset-item id="tree" src="cube.gltf"></a-asset-item>
+      <!-- <a-asset-item id="fox" src="Fox.glb"></a-asset-item> -->
+      <a-asset-item id="fox" src="Sofa.glb"></a-asset-item>
+      <!-- <a-asset-item id="duck" src="Buggy.glb"></a-asset-item> -->
+      <a-asset-item id="duck" src="Koltuk.glb"></a-asset-item>
+    </a-assets>
+
+    <a-entity id="animal" gltf-model="#duck" scale="0.8 0.8 0.8" position="1.5 1 -2.5" rotation="0 -20 0"></a-entity>
+    <a-entity id="cube2" gltf-model="#tree" position="-1.5 1.5 -2" scale="0.4 0.4 0.4" rotation="15 15 0"
+      cube></a-entity>
+
+    <!-- <a-entity id="animal" gltf-model="#duck" scale="0.02 0.02 0.02" position="1.5 1 -2.5" rotation="0 -20 0"></a-entity>
+    <a-entity id="cube2" gltf-model="#tree" position="-1.5 1.5 -2" scale="0.5 0.5 0.5" rotation="45 45 0"
+      cube></a-entity> -->
+
+    <a-entity id="btn0" geometry="primitive:plane" material="color:red" position="-1 2 -4" button></a-entity>
+    <a-entity id="btn1" geometry="primitive:plane" material="color:green" position="0 2 -4" button></a-entity>
+    <a-entity id="btn2" geometry="primitive:plane" material="color:blue" position="1 2 -4" button></a-entity>
+
+    <a-text
+      value="set cursor on color-box and click.cube color changes.\nset cursor on cylinder and click.mesh changes."
+      color="black" position="-1 4 -4"></a-text>
+  </a-scene>
+</body>
+
+</html>
