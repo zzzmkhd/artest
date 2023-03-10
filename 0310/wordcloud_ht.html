@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>similar plot</title>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-look-at-component@1.0.0/dist/aframe-look-at-component.min.js"></script>
+  <script src="./oculus-thumbstick-controls.js"></script>
+  <!-- <script src="./func.js"></script> -->
+  <script src="./categorys.js"></script>
+
+
+</head>
+<script>
+  // alert(result);
+  // console.log(result[4937][1]);
+
+  console.log(cat_data);
+  let scene;
+  let d_cat;
+  let c_cat;
+  let s_cat;
+  let d_cat_array;
+  let c_cat_array;
+
+  let colors = { 'c800000': "red", "nan": "black", 'c100000': "orange", 'c200000': "blue", 'c700000': "green", 'c900000': "pink", 'c0': "grey", 'c500000': "white", 'c400000.0': "purple" };
+
+  window.onload = () => {
+    // scene = document.querySelector("a-scene");
+    scene = document.getElementById("contents");
+    d_cat = document.getElementById("d_cat")
+    c_cat = document.getElementById("c_cat")
+    s_cat = document.getElementById("s_cat")
+
+
+  }
+
+
+  function addPlot(result, type = "a-sphere", txt = "") {
+    let position = result[2] + ' ' + result[3] + ' ' + result[4];
+    let daibunrui = result[5];
+    let chubunrui = result[7];
+    let shobunrui = result[9];
+    let saibunrui = result[11];
+    let shohin = result[1];
+    let freq = result[12];
+
+
+
+    let plot = document.createElement(type);
+    // plot.innerHTML = aframeMutlByte2(shohin)
+    plot.innerHTML = aframeMutlByte2(shohin, colors[daibunrui],freq)
+
+    plot.setAttribute("position", position);
+    plot.setAttribute("scale", "1 1 1");
+    plot.setAttribute("class", "plots " + daibunrui + " " + chubunrui + " " + shobunrui);
+    // plot.setAttribute("color", colors[daibunrui]);
+    plot.setAttribute("style.backgroundColor", "red"); //効かない
+    plot.setAttribute("click_plot", "");
+    plot.setAttribute("title", result[1]); //商品名を設定
+    plot.setAttribute("look-at","[camera]")
+
+    scene.appendChild(plot);
+  }
+
+  function aframeMutlByte2(txt, txtcolor,freq) {
+    const text = txt
+    const text_cnt = text.length
+    // const width = text_cnt * 1.4
+    console.log(freq)
+    const width = text_cnt * 1.4
+    // const height = 1.6
+    const height = width/ text_cnt // 1文字辺りの幅を高さにする
+    let cvs = document.createElement('canvas')
+    let ctx = cvs.getContext('2d')
+    // cvs.width = width * 100
+    // cvs.height = height * 100
+    cvs.width = width * 200
+    cvs.height = height * 200
+    // cvs.width = width * 100 * (1 + freq/ 10)
+    // cvs.height = height * 100 * (1 + freq/ 10)
+    // ctx.fillStyle = "rgb(255, 0, 0)" //文字の色
+    ctx.fillStyle = txtcolor //文字の色
+    ctx.textBaseline = "middle"
+    // ctx.font = '100pt Arial'
+    let fontsize = 100 * (1 + freq/ 10)
+    ctx.font = fontsize + 'pt Arial'
+    ctx.fillText(text, 0, 125)
+
+    const base64 = cvs.toDataURL("image/png")
+    return `<a-image scale="${width / 10} ${height / 10} 1" src="${base64}"></a-image>`
+  }
+
+
+  AFRAME.registerComponent('click_plot', {
+    init: function () {
+      this.el.addEventListener('click', (e) => {
+        console.log(e);
+        console.log(e.target.title);
+        let textEl = document.createElement("a-text");
+        textEl.innerHTML = aframeMutlByte2(e.target.title)
+
+        const cam_pos = scene.camera.el.object3D.position;
+        const obj_pos = e.target.object3D.position;
+        const mid_pos = new THREE.Vector3();
+        mid_pos.addVectors(cam_pos, obj_pos).divideScalar(2.0);
+
+        const cam_rot = scene.camera.el.object3D.rotation;
+        const obj_rot = e.target.object3D.rotation;
+
+        console.log("clicked classList is : ")
+        console.log(e.target.classList);
+        d_cat.setAttribute("class", e.target.classList[1]);
+        c_cat.setAttribute("class", e.target.classList[2]);
+        s_cat.setAttribute("class", e.target.classList[3]);
+        // const class_s = e.target.object3D
+
+
+        // textEl.setAttribute("position",e.target.object3D.position); //オブジェクトの位置に表示
+        textEl.setAttribute("position", mid_pos); //カメラと対象物の中間の位置に表示
+        // textEl.setAttribute("color", "red");
+        scene.appendChild(textEl);
+
+        console.log(e.target.object3D.position);
+        console.log(scene.camera.el.object3D.position);
+        console.log(scene.camera.el.object3D);
+
+        setTimeout(() => { scene.removeChild(textEl) }, 5000);
+      })
+    },
+  });
+
+  AFRAME.registerComponent('click_box', {
+    init: function () {
+      this.el.addEventListener('click', (e) => {
+        console.log(e);
+        if (e.target.classList.length > 0) {
+          console.log(e.target.classList);
+          console.log(e.target.id) //カテゴリID（タグに設定したid）
+          const set_class = e.target.classList[0];
+          let cond = ".plots:not(." + set_class + ")"; //非表示条件のせてい
+          console.log(cond);;
+          let tmp_plots = document.querySelectorAll(cond);
+          //選択された大分類以外は非表示にする
+          tmp_plots.forEach(
+            (elm) => {
+              elm.setAttribute("visible", "false");
+            }
+          )
+
+          setTimeout(() => {
+            let cnum; //カテゴリを表現する桁数（大：2、中：3）
+            let next_cat; //その下位カテゴリ
+            //とりあえずべたで中カテゴリのボックスをクリックしたとき
+            if (e.target.id == "d_cat") {
+              cnum = 2;
+              next_cat = 'c_cat';
+            } else if (e.target.id == "c_cat") {
+              cnum = 3;
+              next_cat = 's_cat'
+            }
+            else {
+              console.log("細分類カテゴリは対応してません")
+            }
+            console.log(set_class);
+            const cat_key = set_class.substr(0, cnum); //大カテゴリの先頭2文字取得。ex)c8
+            const cat_list = cat_data[next_cat];
+            //先頭が大カテゴリ（中カテゴリ）と一致するものを抽出
+            let cat_list_fit = cat_list.filter((value) => {
+              // return value.slice(0, 2) == "c8";
+              return value.slice(0, cnum) == cat_key;
+            });
+            console.log(cat_list_fit);
+            let colors2 = ["blue", "dodgerblue", "cornflowerblue", "deepskyblue", "lightskyblue", "skyblue", "lightblue", "powderblue", "lightcyan"];
+            // for (let cat in cat_list_fit) {
+            cat_list_fit.forEach((cat, index) => {
+              let cond = ".plots." + cat;
+              tmp_plots = document.querySelectorAll(cond);
+              tmp_plots.forEach(
+                (elm) => {
+                  elm.setAttribute("color", colors2[index]);
+                }
+              )
+            })
+
+          }, 5000);
+
+        }
+      })
+    },
+  });
+
+  let result = [];
+
+  function getCSV(fname) {
+    let req = new XMLHttpRequest();
+    req.open("get", fname, true);
+    req.send(null);
+    req.onload = () => {
+      convertCSVtoArray(req.responseText);
+    }
+  }
+
+  function convertCSVtoArray(str) {
+    let tmp = str.split("\n");
+
+    for (let i = 0; i < tmp.length; ++i) {
+      result[i] = tmp[i].split(',');
+    }
+  }
+
+  function addPlotFromCSV() {
+    console.log(result.length);
+    for (let i = 0; i < result.length - 1; ++i) {
+      if (result[i][12] == '') { //細分類名がないものは除外
+        console.log("null");
+        continue;
+      }
+      pos = result[i][2] + ' ' + result[i][3] + ' ' + result[i][4];
+      // addPlot(result[i]);
+      addPlot(result[i],'a-text');
+
+    }
+  }
+
+  getCSV("wcdata2.csv");
+  setTimeout(addPlotFromCSV, 5000);
+
+
+
+</script>
+
+<body>
+  <a-scene webxr="optionalFeatures: hit-test;" ar-hit-test="target: #contents; type: map;" renderer="colorManagement: true;">
+  <!-- <a-scene background="color: #ECECEC" cursor="rayOrigin:mouse"> -->
+    <a-sky src="360_illust.jpg"></a-sky>
+
+
+    <!-- <a-box id="d_cat" scale="0.5 0.5 0.5" position="-0.5 1.25 -5" color="#EF2D5E" shadow click_box></a-box> -->
+    <!-- <a-box id="c_cat" scale="0.5 0.5 0.5" position="0.1 1.25 -5" color="#EF2D5E" shadow click_box></a-box>
+    <a-box id="s_cat" scale="0.5 0.5 0.5" position="0.7 1.25 -5" color="#EF2D5E" shadow click_box></a-box> -->
+<!-- 
+    <a-box scale="0.5 0.5 0.5" position="1.5 1.25 -5"  look-at="[a-camera]"><a-entity position="1 0 1" scale="3 3 3"
+        text="value:HELLO;color:black"></a-value>
+    </a-box> -->
+
+
+    <!-- <a-entity camera look-controls wasd-controls="acceleration:50" position="0 1.7 0">
+        <a-cursor></a-cursor> -->
+    </a-entity>
+    <a-entity id="contents"></a-entity>
+    <!-- Camera + controllers rig -->
+    <a-entity id="rig">
+      <a-camera id="cam" position="5 5 5"></a-camera>
+      <a-entity oculus-touch-controls="hand: left"></a-entity>
+      <a-entity oculus-touch-controls="hand: right" oculus-thumbstick-controls></a-entity>
+    </a-entity>
+  </a-scene>
+
+</body>
+
+</html>
