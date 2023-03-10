@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>music</title>
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+</head>
+
+<body>
+
+  <a-scene loading-screen="dotsColor: gray; backgroundColor: lightgray">
+    <a-sky src="p_image2.jpeg"></a-sky>
+    <a-entity camera look-controls wasd-controls="acceleration:50" position="0 1.7 0">
+    </a-entity>
+    <a-camera id="my_camera">
+      <a-cursor></a-cursor>
+    </a-camera>
+    <a-assets timeout="1000">
+      <audio id="audio01" src="./audio2.wav" preload="auto"></audio>
+      <img id="img_play" src="./pause.png"></img>
+      <img id="img_pause" src="./play.png"></img>
+    </a-assets>
+    <a-sound id="my_sound01" src="#audio01" position="0 1.2 -3" autoplay="false" loop="true"></a-sound>
+    <a-image id="my_btn01" src="#img_pause" position="0 1.2 -3" scale="0.3 0.3 0.3"></a-image>
+  </a-scene>
+
+  <script>
+    const sound01 = document.getElementById("my_sound01");
+    const btn01 = document.getElementById("my_btn01");
+
+    window.onload = (e) => {
+      const scene = document.querySelector("a-scene");
+
+      const sound01 = document.getElementById("my_sound01");
+      const btn01 = document.getElementById("my_btn01");
+      btn01.addEventListener("click", (e) => {
+        const sound = sound01.components.sound;
+        if (sound.isPlaying) {
+          sound.pauseSound();
+          e.target.setAttribute("src", "#img_pause");
+        } else {
+          sound.playSound();
+          e.target.setAttribute("src", "#img_play");
+        }
+      });
+    }
+  </script>
+
+
+</body>
+
+</html>
