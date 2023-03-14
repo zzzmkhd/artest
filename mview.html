@@ -9,10 +9,6 @@
       type="module"
       src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
     ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"
-    ></script>
   </head>
   <body>
     <model-viewer
@@ -22,6 +18,7 @@
       auto-rotate
       camera-controls
       ar
+      ar-modes="scene-viewer webxr quick-look"
     ></model-viewer>
   </body>
 </html>
