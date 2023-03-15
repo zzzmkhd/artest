@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>music</title>
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+</head>
+
+<body>
+
+  <a-scene loading-screen="dotsColor: gray; backgroundColor: lightgray">
+    <a-sky src="p_image0.jpg"></a-sky>
+    <a-entity camera look-controls wasd-controls="acceleration:50" position="0 1.7 0">
+      <a-cursor></a-cursor>
+    </a-entity>
+    <a-assets timeout="1000">
+      <audio id="audio0" src="./audio0.wav" preload="auto"></audio>
+      <audio id="audio1" src="./audio1.wav" preload="auto"></audio>
+      <audio id="audio2" src="./audio2.wav" preload="auto"></audio>
+      <img id="img_play" src="./pause.png"></img>
+      <img id="img_pause" src="./play.png"></img>
+    </a-assets>
+    <a-sound id="my_sound01" src="#audio0" position="0 1.2 -3" autoplay="false" loop="true"></a-sound>
+    <a-image id="my_btn01" src="#img_pause" opacity="0.4" position="0 1.2 -3" scale="0.3 0.3 0.3"></a-image>
+    <a-entity geometry="primitive: sphere" material="src:change.png" id="changeBox"
+      animation="property: rotation; to: 0 360 0; loop: true;dur:1500" click_box position="0.5 1.2 -3"
+      scale="0.2 0.2 0.2" color="red"></a-entity>
+
+      <a-entity geometry="primitive: plane; height: 5; width: 5" material="transparent: true;src:tpoint.png"
+        position="-100 0 -70" rotation="0 0 0" animation="property: components.material.material.opacity;
+                  from: 0;
+                  to: 1;
+                  dir: alternate;
+                  dur: 1000;
+                  loop: true">
+      </a-entity>
+  </a-scene>
+
+  <script>
+
+    let clickCount = 0;
+    const sound01 = document.getElementById("my_sound01");
+    const btn01 = document.getElementById("my_btn01");
+
+
+    AFRAME.registerComponent('click_box', {
+      init: function () {
+        this.el.addEventListener('click', (e) => {
+          const changeBox = document.getElementById("changeBox")
+          const sky = document.querySelector("a-sky")
+
+          clickCount++;
+          let num = clickCount % 3
+
+          changeBox.setAttribute("color", "yellow"); //カメラと対象物の中間の位置に表示
+          sky.setAttribute("src", "p_image" + num + ".jpg")
+          const audio = document.querySelector("a-sound")
+          audio.setAttribute("src", "#audio" + num)
+
+          // const btn01 = document.getElementById("my_btn01");
+          btn01.setAttribute("src", "#img_pause");
+
+        })
+      },
+    });
+
+
+
+
+
+    window.onload = (e) => {
+      const scene = document.querySelector("a-scene");
+
+      const sound01 = document.getElementById("my_sound01");
+      const btn01 = document.getElementById("my_btn01");
+      btn01.addEventListener("click", (e) => {
+        console.log(e.target)
+        const sound = sound01.components.sound;
+        if (sound.isPlaying) {
+          sound.pauseSound();
+          e.target.setAttribute("src", "#img_pause");
+        } else {
+          sound.playSound();
+          e.target.setAttribute("src", "#img_play");
+        }
+      });
+    }
+  </script>
+
+
+</body>
+
+</html>
